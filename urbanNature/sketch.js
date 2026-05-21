@@ -68,6 +68,13 @@ const FADE_FRAMES  = 45;
 let blueCityBuf = null, blueReflBuf = null;
 let pinkCityBuf = null, pinkReflBuf = null;
 
+// motionAssets フラッシュ
+const C45 = Math.SQRT1_2;
+const FLASH_SQUARE = MASK_R * 2; // 円と同じ直径の正方形
+let flashLines = [];
+let flashDots  = [];
+let flashFrames = 0;
+
 // モーション検出グリッド（下半円専用）
 const MG_COLS = 32;
 const MG_ROWS = 20;
@@ -214,6 +221,7 @@ function setup() {
   makeButton('move',       'calc(50% + 192px)',     startMoveAnim);
   makeButton('copy state', 'calc(50% + 240px)',     copyState);
   makeButton('load state', 'calc(50% + 288px)',     loadStatePrompt);
+  makeButton('flash [A]',  'calc(50% + 336px)',     triggerFlash);
   setupPane();
 
   // blue 先焼き
@@ -904,6 +912,10 @@ function draw() {
   // モーションボックスは円マスクで切り取られないよう、ここで描画する
   if (vidReady) drawMotionEffect();
 
+  // Aキー長押し中は毎8フレームでフラッシュ再生成
+  if (keyIsDown(65) && frameCount % 8 === 0) triggerFlash();
+  drawFlash();
+
   if (textBuf) image(textBuf, 0, 0);
 
   // FPS 表示は不要のため削除
@@ -1053,4 +1065,121 @@ function keyPressed() {
     let fs = fullscreen();
     fullscreen(!fs);
   }
+  if (key === 'a' || key === 'A') {
+    triggerFlash();
+  }
+}
+
+// ---- motionAssets フラッシュ機能 ----
+
+function triggerFlash() {
+  buildFlashLines();
+  buildFlashDots();
+  flashFrames = 3;
+  loop();
+}
+
+function buildFlashLines() {
+  flashLines = [];
+  const half = FLASH_SQUARE / 2;
+  const count = floor(random(3, 6));
+  for (let i = 0; i < count; i++) {
+    const u = random(-half * 0.35, half * 0.35);
+    const v = random(-half * 0.5,  half * 0.5);
+    const len = random(1) < 0.3
+      ? random(half * 0.85, half * 1.25)
+      : random(half * 0.3,  half * 0.65);
+    flashLines.push({ u, v, len });
+  }
+}
+
+function buildFlashDots() {
+  flashDots = [];
+  const half = FLASH_SQUARE / 2;
+  let attempts = 0;
+  while (flashDots.length < 2 && attempts < 500) {
+    attempts++;
+    const s = random(half * 0.008, half * 0.016);
+    const x = random(-half * 0.38, half * 0.38);
+    const y = random(-half * 0.38, half * 0.38);
+    if (flashClearOfLines(x, y, s) && flashClearOfDots(x, y, s)) {
+      flashDots.push({ x, y, s });
+    }
+  }
+}
+
+function flashLineEndpoints(ln) {
+  const u1 = ln.u - ln.len / 2;
+  const u2 = ln.u + ln.len / 2;
+  return {
+    x1: (u1 - ln.v) * C45, y1: (u1 + ln.v) * C45,
+    x2: (u2 - ln.v) * C45, y2: (u2 + ln.v) * C45,
+  };
+}
+
+function flashClearOfLines(x, y, s) {
+  const need = s * C45 + 8;
+  for (const ln of flashLines) {
+    const e = flashLineEndpoints(ln);
+    if (flashDistToSeg(x, y, e.x1, e.y1, e.x2, e.y2) < need) return false;
+  }
+  return true;
+}
+
+function flashClearOfDots(x, y, s) {
+  for (const d of flashDots) {
+    if (dist(x, y, d.x, d.y) < s + d.s) return false;
+  }
+  return true;
+}
+
+function flashDistToSeg(px, py, x1, y1, x2, y2) {
+  const dx = x2 - x1, dy = y2 - y1;
+  const l2 = dx * dx + dy * dy;
+  let t = l2 === 0 ? 0 : ((px - x1) * dx + (py - y1) * dy) / l2;
+  t = constrain(t, 0, 1);
+  return dist(px, py, x1 + t * dx, y1 + t * dy);
+}
+
+function drawFlash() {
+  if (flashFrames <= 0) return;
+
+  push();
+  translate(width / 2, height / 2);
+  rectMode(CENTER);
+
+  // 正方形の枠線
+  noFill();
+  stroke(0);
+  strokeWeight(2);
+  square(0, 0, FLASH_SQUARE);
+
+  // 正方形でクリップして内部に描画
+  drawingContext.save();
+  drawingContext.beginPath();
+  drawingContext.rect(-FLASH_SQUARE / 2, -FLASH_SQUARE / 2, FLASH_SQUARE, FLASH_SQUARE);
+  drawingContext.clip();
+
+  // 正方形のドット
+  noStroke();
+  fill(0);
+  for (const d of flashDots) {
+    square(d.x, d.y, d.s);
+  }
+
+  // 45度回転した線
+  push();
+  rotate(QUARTER_PI);
+  noFill();
+  stroke(0);
+  strokeWeight(4);
+  for (const ln of flashLines) {
+    line(ln.u - ln.len / 2, ln.v, ln.u + ln.len / 2, ln.v);
+  }
+  pop();
+
+  drawingContext.restore();
+  pop();
+
+  flashFrames--;
 }
