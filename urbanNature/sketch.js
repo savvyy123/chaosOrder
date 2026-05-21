@@ -845,6 +845,10 @@ function draw() {
   background(255);
   drawBottomParticles();
 
+  // Aキー長押し中は毎8フレームでフラッシュ再生成
+  if (keyIsDown(65) && frameCount % 8 === 0) triggerFlash();
+  drawFlash();
+
   drawingContext.save();
   try {
     drawingContext.beginPath();
@@ -911,10 +915,6 @@ function draw() {
 
   // モーションボックスは円マスクで切り取られないよう、ここで描画する
   if (vidReady) drawMotionEffect();
-
-  // Aキー長押し中は毎8フレームでフラッシュ再生成
-  if (keyIsDown(65) && frameCount % 8 === 0) triggerFlash();
-  drawFlash();
 
   if (textBuf) image(textBuf, 0, 0);
 
@@ -1148,12 +1148,6 @@ function drawFlash() {
   translate(width / 2, height / 2);
   rectMode(CENTER);
 
-  // 正方形の枠線
-  noFill();
-  stroke(0);
-  strokeWeight(2);
-  square(0, 0, FLASH_SQUARE);
-
   // 正方形でクリップして内部に描画
   drawingContext.save();
   drawingContext.beginPath();
@@ -1172,7 +1166,7 @@ function drawFlash() {
   rotate(QUARTER_PI);
   noFill();
   stroke(0);
-  strokeWeight(4);
+  strokeWeight(0.8);
   for (const ln of flashLines) {
     line(ln.u - ln.len / 2, ln.v, ln.u + ln.len / 2, ln.v);
   }
