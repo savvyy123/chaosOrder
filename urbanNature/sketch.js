@@ -884,6 +884,8 @@ function draw() {
         image(reflectionBuf, 0, 0);
       }
     }
+
+    drawHorizonParticles();
   } catch (e) {
     console.error(e);
   }
@@ -895,6 +897,55 @@ function draw() {
   if (textBuf) image(textBuf, 0, 0);
 
   // FPS 表示は不要のため削除
+}
+
+// シティと動画の境界（height/2）に円・三角・四角が山なりに積もる表現
+function drawHorizonParticles() {
+  push();
+  randomSeed(789);
+  noFill();
+  strokeWeight(0.8);
+  stroke(255);
+
+  const cx = width / 2;
+  const baseY = height / 2;
+  const halfW = MASK_R * 0.92;
+  const moundH = MASK_R * 0.13;
+  const count = 220;
+
+  for (let i = 0; i < count; i++) {
+    const u = random(-1, 1);
+    const xNorm = Math.sign(u) * Math.pow(Math.abs(u), 1.2);
+    const x = cx + xNorm * halfW;
+    const localTop = baseY - moundH * (1 - xNorm * xNorm);
+    const t = random();
+    const y = lerp(localTop, baseY, t);
+    const sz = lerp(1, 6, t) + random(-0.3, 0.3);
+    const half = sz / 2;
+    const shape = floor(random(3));
+    const rot = random(TWO_PI);
+    const c = cos(rot);
+    const s = sin(rot);
+
+    if (shape === 0) {
+      circle(x, y, sz);
+    } else if (shape === 1) {
+      quad(
+        x + (-half)*c - (-half)*s, y + (-half)*s + (-half)*c,
+        x + ( half)*c - (-half)*s, y + ( half)*s + (-half)*c,
+        x + ( half)*c - ( half)*s, y + ( half)*s + ( half)*c,
+        x + (-half)*c - ( half)*s, y + (-half)*s + ( half)*c
+      );
+    } else {
+      const h2 = sz * 0.866;
+      triangle(
+        x + 0*c      - (-h2/2)*s, y + 0*s      + (-h2/2)*c,
+        x + (-half)*c - (h2/2)*s, y + (-half)*s + (h2/2)*c,
+        x + ( half)*c - (h2/2)*s, y + ( half)*s + (h2/2)*c
+      );
+    }
+  }
+  pop();
 }
 
 // 建物。display() で上=建物 / 下=反射 を同じ点描で描く
