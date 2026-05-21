@@ -916,11 +916,11 @@ function drawBottomParticles() {
     const y = lerp(0, height, t);
 
     // x は中心から外側へ、上ほど狭く下ほど広がる（垂れ落ちる形）
-    const spreadX = lerp(width * 0.04, width * 0.38, t);
+    const spreadX = lerp(width * 0.38, width * 0.04, t);
     const x = cx + random(-spreadX, spreadX);
 
     // 下ほど大粒、上ほど小粒
-    const sz = lerp(0.8, 7.0, t) + random(-0.3, 0.3);
+    const sz = lerp(7.0, 0.8, t) + random(-0.3, 0.3);
     const half = sz / 2;
     const shape = floor(random(3));
     const rot = random(TWO_PI);
