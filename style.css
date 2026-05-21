@@ -52,3 +52,23 @@ canvas {
 #btn-poster:hover {
   background: #f0f0f0;
 }
+
+#btn-urban {
+  position: fixed;
+  top: 16px;
+  right: 164px;
+  padding: 6px 14px;
+  background: #fff;
+  color: #222;
+  font-size: 12px;
+  font-family: sans-serif;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  text-decoration: none;
+  z-index: 9999;
+  cursor: pointer;
+}
+
+#btn-urban:hover {
+  background: #f0f0f0;
+}

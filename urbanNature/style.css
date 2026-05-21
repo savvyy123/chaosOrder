@@ -1,0 +1,29 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html, body {
+  min-height: 100%;
+  background: #e8e8e8;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 24px;
+  overflow: auto;
+}
+
+canvas {
+  display: block;
+  width: auto;
+  height: auto;
+  max-width: min(794px, calc(100vw - 48px));
+  max-height: calc(100vh - 48px);
+}
+
+.tp-dfwv {
+  left: auto;
+  left: 8px;
+  right: auto;
+}
