@@ -130,6 +130,7 @@ function setup() {
   vid = createVideo("assets/DSCF2300.mp4", onVideoReady);
   vid.hide();
   vid.elt.muted = true;
+  vid.elt.setAttribute('preload', 'auto');
   vid.volume(0);
   vid.loop();
 
