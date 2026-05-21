@@ -1087,8 +1087,8 @@ function buildFlashLines() {
     const u = random(-half * 0.35, half * 0.35);
     const v = random(-half * 0.5,  half * 0.5);
     const len = random(1) < 0.3
-      ? random(half * 0.85, half * 1.25)
-      : random(half * 0.3,  half * 0.65);
+      ? random(half * 1.8, half * 3.0)
+      : random(half * 0.9, half * 1.6);
     flashLines.push({ u, v, len });
   }
 }
