@@ -127,7 +127,7 @@ function setup() {
 
   motionCapBuf = createGraphics(MG_COLS, MG_ROWS);
 
-  vid = createVideo("assets/DSCF2300.MOV", onVideoReady);
+  vid = createVideo("assets/DSCF2300.mp4", onVideoReady);
   vid.hide();
   vid.elt.muted = true;
   vid.volume(0);
