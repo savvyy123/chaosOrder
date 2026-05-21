@@ -1082,14 +1082,16 @@ function triggerFlash() {
 
 function buildFlashLines() {
   flashLines = [];
-  const half = FLASH_SQUARE / 2;
+  const halfW = width / 2;
+  const halfH = height / 2;
+  const diag = sqrt(halfW * halfW + halfH * halfH);
   const count = floor(random(3, 6));
   for (let i = 0; i < count; i++) {
-    const u = random(-half * 0.35, half * 0.35);
-    const v = random(-half * 0.5,  half * 0.5);
+    const u = random(-halfW, halfW);
+    const v = random(-halfH, halfH);
     const len = random(1) < 0.3
-      ? random(half * 1.8, half * 3.0)
-      : random(half * 0.9, half * 1.6);
+      ? random(diag * 1.8, diag * 3.0)
+      : random(diag * 0.9, diag * 1.6);
     flashLines.push({ u, v, len });
   }
 }
@@ -1149,12 +1151,6 @@ function drawFlash() {
   translate(width / 2, height / 2);
   rectMode(CENTER);
 
-  // 正方形でクリップして内部に描画
-  drawingContext.save();
-  drawingContext.beginPath();
-  drawingContext.rect(-FLASH_SQUARE / 2, -FLASH_SQUARE / 2, FLASH_SQUARE, FLASH_SQUARE);
-  drawingContext.clip();
-
   // 正方形のドット
   noStroke();
   fill(0);
@@ -1162,7 +1158,7 @@ function drawFlash() {
     square(d.x, d.y, d.s);
   }
 
-  // 45度回転した線
+  // 45度回転した線（画面全体）
   push();
   rotate(QUARTER_PI);
   noFill();
@@ -1172,8 +1168,6 @@ function drawFlash() {
     line(ln.u - ln.len / 2, ln.v, ln.u + ln.len / 2, ln.v);
   }
   pop();
-
-  drawingContext.restore();
   pop();
 
   flashFrames--;
