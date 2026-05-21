@@ -899,7 +899,7 @@ function draw() {
   // FPS 表示は不要のため削除
 }
 
-// 画面下部の白い背景に円・三角・四角が下から積もる表現（TimeSketch流用）
+// 上から下へ伸びる粒子の表現（円・三角・四角）
 function drawBottomParticles() {
   push();
   randomSeed(456);
@@ -908,23 +908,19 @@ function drawBottomParticles() {
   stroke(0);
 
   const cx = width / 2;
-  const baseY = height;           // 画面の一番下が地面
-  const moundW = width * 0.72;    // 横の広がり
-  const moundH = height * 0.18;  // 上へ積もる高さ
-  const count = 260;
+  const count = 300;
 
   for (let i = 0; i < count; i++) {
-    const u = random(-1, 1);
-    const xNorm = Math.sign(u) * Math.pow(Math.abs(u), 1.4);
-    const x = cx + xNorm * moundW / 2;
+    // y は画面全体に均等分布（上から下へ）
+    const t = random();           // 0=上端, 1=下端
+    const y = lerp(0, height, t);
 
-    // 中央が最も高く、端に向かって低くなる放物線
-    const localTop = baseY - moundH * (1 - xNorm * xNorm);
-    const t = random();
-    const y = lerp(localTop, baseY, t);
+    // x は中心から外側へ、上ほど狭く下ほど広がる（垂れ落ちる形）
+    const spreadX = lerp(width * 0.04, width * 0.38, t);
+    const x = cx + random(-spreadX, spreadX);
 
     // 下ほど大粒、上ほど小粒
-    const sz = lerp(1.2, 7.5, 1 - t) + random(-0.4, 0.4);
+    const sz = lerp(0.8, 7.0, t) + random(-0.3, 0.3);
     const half = sz / 2;
     const shape = floor(random(3));
     const rot = random(TWO_PI);
@@ -943,9 +939,9 @@ function drawBottomParticles() {
     } else {
       const h2 = sz * 0.866;
       triangle(
-        x,                    y - h2 / 2,
-        x + (-half)*c - (h2/2)*s, y + (-half)*s + (h2/2)*c,
-        x + ( half)*c - (h2/2)*s, y + ( half)*s + (h2/2)*c
+        x,           y - h2 / 2,
+        x - half,    y + h2 / 2,
+        x + half,    y + h2 / 2
       );
     }
   }
