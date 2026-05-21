@@ -843,7 +843,6 @@ function draw() {
   if (frameCount % 2 === 0) updateMotionGrid();
 
   background(255);
-  drawBottomParticles();
 
   // Aキー長押し中は毎8フレームでフラッシュ再生成
   if (keyIsDown(65) && frameCount % 8 === 0) triggerFlash();
