@@ -847,7 +847,6 @@ function draw() {
 
   // Aキー長押し中は毎8フレームでフラッシュ再生成
   if (keyIsDown(65) && frameCount % 8 === 0) triggerFlash();
-  drawFlash();
 
   drawingContext.save();
   try {
@@ -912,6 +911,8 @@ function draw() {
     console.error(e);
   }
   drawingContext.restore();
+
+  drawFlash();
 
   // モーションボックスは円マスクで切り取られないよう、ここで描画する
   if (vidReady) drawMotionEffect();
