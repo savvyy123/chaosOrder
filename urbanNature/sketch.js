@@ -1074,6 +1074,7 @@ function keyPressed() {
 // ---- motionAssets フラッシュ機能 ----
 
 function triggerFlash() {
+  randomSeed(millis());
   buildFlashLines();
   buildFlashDots();
   flashFrames = 3;
