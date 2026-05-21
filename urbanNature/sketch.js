@@ -835,6 +835,7 @@ function draw() {
   if (frameCount % 2 === 0) updateMotionGrid();
 
   background(255);
+  drawBottomParticles();
 
   drawingContext.save();
   try {
@@ -885,7 +886,6 @@ function draw() {
       }
     }
 
-    drawHorizonParticles();
   } catch (e) {
     console.error(e);
   }
@@ -899,28 +899,32 @@ function draw() {
   // FPS 表示は不要のため削除
 }
 
-// シティと動画の境界（height/2）に円・三角・四角が山なりに積もる表現
-function drawHorizonParticles() {
+// 画面下部の白い背景に円・三角・四角が下から積もる表現（TimeSketch流用）
+function drawBottomParticles() {
   push();
-  randomSeed(789);
+  randomSeed(456);
   noFill();
   strokeWeight(0.8);
-  stroke(255);
+  stroke(0);
 
   const cx = width / 2;
-  const baseY = height / 2;
-  const halfW = MASK_R * 0.92;
-  const moundH = MASK_R * 0.13;
-  const count = 220;
+  const baseY = height;           // 画面の一番下が地面
+  const moundW = width * 0.72;    // 横の広がり
+  const moundH = height * 0.18;  // 上へ積もる高さ
+  const count = 260;
 
   for (let i = 0; i < count; i++) {
     const u = random(-1, 1);
-    const xNorm = Math.sign(u) * Math.pow(Math.abs(u), 1.2);
-    const x = cx + xNorm * halfW;
+    const xNorm = Math.sign(u) * Math.pow(Math.abs(u), 1.4);
+    const x = cx + xNorm * moundW / 2;
+
+    // 中央が最も高く、端に向かって低くなる放物線
     const localTop = baseY - moundH * (1 - xNorm * xNorm);
     const t = random();
     const y = lerp(localTop, baseY, t);
-    const sz = lerp(1, 6, t) + random(-0.3, 0.3);
+
+    // 下ほど大粒、上ほど小粒
+    const sz = lerp(1.2, 7.5, 1 - t) + random(-0.4, 0.4);
     const half = sz / 2;
     const shape = floor(random(3));
     const rot = random(TWO_PI);
@@ -939,7 +943,7 @@ function drawHorizonParticles() {
     } else {
       const h2 = sz * 0.866;
       triangle(
-        x + 0*c      - (-h2/2)*s, y + 0*s      + (-h2/2)*c,
+        x,                    y - h2 / 2,
         x + (-half)*c - (h2/2)*s, y + (-half)*s + (h2/2)*c,
         x + ( half)*c - (h2/2)*s, y + ( half)*s + (h2/2)*c
       );
