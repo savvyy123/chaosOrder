@@ -498,14 +498,14 @@ function drawMotionEffect() {
       // サイズに多様性を追加: 値に応じた基本サイズにランダム性を加え、
       // ごく稀に非常に大きい/小さいボックスを生成
       // 基本サイズをやや控えめにして最大値を下げる
-      let size = constrain(8 + pow(c.value, 0.6) * 70 + random(-10, 10), 4, 110);
+      let size = constrain(5 + pow(c.value, 0.6) * 40 + random(-6, 6), 3, 60);
       const r = random();
       if (r < 0.04) {
-        // 大きめボックス (4%) — さらに控えめに
-        size = constrain(size * random(1.1, 1.4), 10, 160);
+        // 大きめボックス (4%)
+        size = constrain(size * random(1.1, 1.3), 8, 90);
       } else if (r < 0.64) {
-        // 小さめボックス (60%) — 小さいのを増やす
-        size = constrain(size * random(0.2, 0.55), 3, 70);
+        // 小さめボックス (60%)
+        size = constrain(size * random(0.2, 0.55), 2, 40);
       }
       const aspect = 0.6 + c.value * 0.3 + random(-0.12, 0.12);
       const halfW = size * aspect * 0.5;
