@@ -886,6 +886,16 @@ function draw() {
       }
     }
 
+    // 円の縁をフェードして奥に沈む奥行き感
+    const grad = drawingContext.createRadialGradient(
+      width / 2, height / 2, MASK_R * 0.55,
+      width / 2, height / 2, MASK_R
+    );
+    grad.addColorStop(0, 'rgba(255,255,255,0)');
+    grad.addColorStop(1, 'rgba(255,255,255,0.92)');
+    drawingContext.fillStyle = grad;
+    drawingContext.fillRect(0, 0, width, height);
+
   } catch (e) {
     console.error(e);
   }
@@ -908,7 +918,7 @@ function drawBottomParticles() {
   stroke(0);
 
   const cx = width / 2;
-  const count = 300;
+  const count = 500;
 
   for (let i = 0; i < count; i++) {
     // y は画面全体に均等分布（上から下へ）
@@ -916,7 +926,7 @@ function drawBottomParticles() {
     const y = lerp(0, height, t);
 
     // x は中心から外側へ、上ほど狭く下ほど広がる（垂れ落ちる形）
-    const spreadX = lerp(width * 0.38, width * 0.04, t);
+    const spreadX = lerp(width * 0.52, width * 0.08, t);
     const x = cx + random(-spreadX, spreadX);
 
     // 下ほど大粒、上ほど小粒
