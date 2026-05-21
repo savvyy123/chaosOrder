@@ -843,6 +843,7 @@ function draw() {
   if (frameCount % 2 === 0) updateMotionGrid();
 
   background(255);
+  drawBottomParticles();
 
   // Aキー長押し中は毎8フレームでフラッシュ再生成
   if (keyIsDown(65) && frameCount % 8 === 0) triggerFlash();
@@ -921,7 +922,7 @@ function draw() {
   // FPS 表示は不要のため削除
 }
 
-// 上から下へ伸びる粒子の表現（円・三角・四角）
+// 背景全体にランダム散布する幾何学模様（円・三角・四角）
 function drawBottomParticles() {
   push();
   randomSeed(456);
@@ -929,20 +930,12 @@ function drawBottomParticles() {
   strokeWeight(0.8);
   stroke(0);
 
-  const cx = width / 2;
-  const count = 500;
+  const count = 600;
 
   for (let i = 0; i < count; i++) {
-    // y は画面全体に均等分布（上から下へ）
-    const t = random();           // 0=上端, 1=下端
-    const y = lerp(0, height, t);
-
-    // x は中心から外側へ、上ほど狭く下ほど広がる（垂れ落ちる形）
-    const spreadX = lerp(width * 0.52, width * 0.08, t);
-    const x = cx + random(-spreadX, spreadX);
-
-    // 下ほど大粒、上ほど小粒
-    const sz = lerp(7.0, 0.8, t) + random(-0.3, 0.3);
+    const x = random(width);
+    const y = random(height);
+    const sz = random(1.5, 6.5);
     const half = sz / 2;
     const shape = floor(random(3));
     const rot = random(TWO_PI);
@@ -961,9 +954,9 @@ function drawBottomParticles() {
     } else {
       const h2 = sz * 0.866;
       triangle(
-        x,           y - h2 / 2,
-        x - half,    y + h2 / 2,
-        x + half,    y + h2 / 2
+        x,        y - h2 / 2,
+        x - half, y + h2 / 2,
+        x + half, y + h2 / 2
       );
     }
   }
