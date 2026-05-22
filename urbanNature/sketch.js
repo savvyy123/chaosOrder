@@ -895,15 +895,6 @@ function draw() {
       }
     }
 
-    // 円の縁をフェードして奥に沈む奥行き感
-    const grad = drawingContext.createRadialGradient(
-      width / 2, height / 2, MASK_R * 0.55,
-      width / 2, height / 2, MASK_R
-    );
-    grad.addColorStop(0, 'rgba(255,255,255,0)');
-    grad.addColorStop(1, 'rgba(255,255,255,0.92)');
-    drawingContext.fillStyle = grad;
-    drawingContext.fillRect(0, 0, width, height);
 
   } catch (e) {
     console.error(e);
