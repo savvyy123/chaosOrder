@@ -614,13 +614,13 @@ function drawMotionEffect() {
   }
 
   push();
+  noFill();
   strokeWeight(1);
   for (const t of trackedBoxes) {
     const boxW = t.x2 - t.x1;
     const boxH = t.y2 - t.y1;
     if (boxW <= 0 || boxH <= 0) continue;
     const a = typeof t.alpha === 'number' ? t.alpha : 1.0;
-    fill(255, round(160 * a));
     stroke(0, round(255 * a));
     rect(t.x1 - 2, t.y1 - 2, boxW + 4, boxH + 4);
   }
