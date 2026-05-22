@@ -1069,8 +1069,8 @@ function buildFlashLines() {
   const diag = sqrt(halfW * halfW + halfH * halfH);
   const count = floor(random(3, 6));
   for (let i = 0; i < count; i++) {
-    const u = random(-halfW, halfW);
-    const v = random(-halfH, halfH);
+    const u = random(-halfW * 0.3, halfW * 0.3);
+    const v = random(-halfH * 0.3, halfH * 0.3);
     const len = random(1) < 0.3
       ? random(diag * 1.8, diag * 3.0)
       : random(diag * 0.9, diag * 1.6);
